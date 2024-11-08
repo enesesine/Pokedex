@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokédex</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="/pokeball.png" />
+  </head>
+  <body>
+    <header class="header">
+      <img src="pokeball.png" alt="Pokeball" class="pokeball-logo" />
+      <h1>Pokédex</h1>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Pokémon suchen..."
+        oninput="searchPokemon()"
+      />
+    </header>
+
+    <main id="pokemonGrid" class="pokemon-grid">
+      <!-- Pokémon-Karten werden hier dynamisch eingefügt -->
+    </main>
+
+    <!-- Pop-up für detaillierte Pokémon-Informationen -->
+    <div id="popup" class="popup" onclick="closePopup(event)">
+      <div class="popup-content">
+        <span class="close-btn" onclick="closePopup(event)">&times;</span>
+        <div id="popupInfo">
+          <!-- Dynamische Pokémon-Daten werden hier eingefügt -->
+        </div>
+        <!-- Pfeile hinzufügen -->
+        <span class="arrow left" onclick="navigatePokemon(-1)">&#9664;</span>
+        <span class="arrow right" onclick="navigatePokemon(1)">&#9654;</span>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>Erstellt mit der <a href="https://pokeapi.co/">PokéAPI</a></p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
