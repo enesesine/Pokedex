@@ -1,4 +1,3 @@
-// Mapping von Pokémon-Typen zu Farben
 const typeColors = {
   fire: "var(--fire)",
   water: "var(--water)",
@@ -20,10 +19,9 @@ const typeColors = {
   normal: "var(--normal)",
 };
 
-let allPokemonData = []; // Speichert alle geladenen Pokémon-Daten
-let currentPokemonIndex = 0; // Index des aktuell angezeigten Pokémon
+let allPokemonData = [];
+let currentPokemonIndex = 0;
 
-// Funktion zum Laden der Pokémon-Karten
 async function loadPokemon() {
   const pokemonGrid = document.getElementById("pokemonGrid");
 
@@ -31,23 +29,18 @@ async function loadPokemon() {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`);
     const data = await response.json();
 
-    // Pokémon-Daten zur Liste hinzufügen
     allPokemonData.push(data);
 
-    // Erstelle eine Pokémon-Karte für jedes Pokémon
     const pokemonCard = document.createElement("div");
     pokemonCard.classList.add("pokemon-card");
     pokemonCard.dataset.name = data.name.toLowerCase();
 
-    // Bestimme den Haupttyp
     const mainType = data.types[0].type.name;
 
-    // Wenn der Typ "normal" ist, füge die 'normal' Klasse hinzu
     if (mainType === "normal") {
       pokemonCard.classList.add("normal");
     }
 
-    // Setze die Typ-Farbe für die Karte
     pokemonCard.style.border = `2px solid ${typeColors[mainType]}`;
 
     pokemonCard.innerHTML = `
@@ -59,49 +52,22 @@ async function loadPokemon() {
       }">${mainType}</div>
     `;
 
-    // Beim Klick öffnet sich das Pop-up mit weiteren Details
     pokemonCard.onclick = () => showPopup(data);
 
     pokemonGrid.appendChild(pokemonCard);
   }
 }
 
-// Funktion zum Anzeigen des Pop-ups mit Pokémon-Daten
 async function showPopup(data) {
   const popup = document.getElementById("popup");
   currentPokemonIndex = allPokemonData.findIndex(
     (pokemon) => pokemon.id === data.id
   );
 
-  // Hole zusätzliche Daten zur Evolutionskette und aktualisiere den Pop-up-Inhalt
-  const speciesResponse = await fetch(data.species.url);
-  const speciesData = await speciesResponse.json();
-
-  if (speciesData.evolution_chain) {
-    const evolutionChainResponse = await fetch(speciesData.evolution_chain.url);
-    const evolutionChainData = await evolutionChainResponse.json();
-    const evolutionChain = getEvolutionChain(evolutionChainData.chain);
-    data.evolutionChain = evolutionChain;
-  }
-
   updatePopupContent(data);
   popup.style.display = "flex";
 }
 
-// Extrahiert die Evolutionskette als Array von Pokémon-Namen
-function getEvolutionChain(chain) {
-  const evolutionChain = [];
-  let currentStage = chain;
-
-  while (currentStage) {
-    evolutionChain.push(currentStage.species.name);
-    currentStage = currentStage.evolves_to[0];
-  }
-
-  return evolutionChain;
-}
-
-// Aktualisiere den Inhalt des Pop-ups basierend auf den Pokémon-Daten
 function updatePopupContent(data) {
   const popupInfo = document.getElementById("popupInfo");
 
@@ -112,35 +78,21 @@ function updatePopupContent(data) {
     <p><span class="type-color" style="background-color: ${
       typeColors[mainType]
     }">${mainType}</span></p>
-    <p><strong>Typ:</strong> ${data.types
+    <p>🌈 <strong>Typ:</strong> ${data.types
       .map((type) => type.type.name)
       .join(", ")}</p>
-    <p><strong>Höhe:</strong> ${data.height / 10} m</p>
-    <p><strong>Gewicht:</strong> ${data.weight / 10} kg</p>
-    <p><strong>Attacken:</strong></p>
+    <p>📏 <strong>Höhe:</strong> ${data.height / 10} m</p>
+    <p>⚖️ <strong>Gewicht:</strong> ${data.weight / 10} kg</p>
+    <p>💥 <strong>Attacken:</strong></p>
     <ul>
       ${data.moves
-        .slice(0, 5)
+        .slice(0, 4)
         .map((move) => `<li>${move.move.name}</li>`)
         .join("")}
     </ul>
-    ${
-      data.evolutionChain
-        ? `<p><strong>Evolution:</strong></p>
-    <ul>
-      ${data.evolutionChain
-        .map(
-          (evolution) =>
-            `<li>${evolution.charAt(0).toUpperCase() + evolution.slice(1)}</li>`
-        )
-        .join("")}
-    </ul>`
-        : ""
-    }
   `;
 }
 
-// Navigation zu vorherigem oder nächstem Pokémon
 function navigatePokemon(direction) {
   currentPokemonIndex += direction;
   if (currentPokemonIndex < 0) {
@@ -151,7 +103,6 @@ function navigatePokemon(direction) {
   showPopup(allPokemonData[currentPokemonIndex]);
 }
 
-// Pop-up schließen
 function closePopup(event) {
   if (
     event.target.id === "popup" ||
@@ -161,7 +112,6 @@ function closePopup(event) {
   }
 }
 
-// Suchfunktion
 function searchPokemon() {
   const searchInput = document
     .getElementById("searchInput")
@@ -174,5 +124,4 @@ function searchPokemon() {
   });
 }
 
-// Lade die Pokémon-Karten, wenn die Seite geladen ist
 window.onload = loadPokemon;

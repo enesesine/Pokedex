@@ -19,18 +19,13 @@
       />
     </header>
 
-    <main id="pokemonGrid" class="pokemon-grid">
-      <!-- Pokémon-Karten werden hier dynamisch eingefügt -->
-    </main>
+    <main id="pokemonGrid" class="pokemon-grid"></main>
 
-    <!-- Pop-up für detaillierte Pokémon-Informationen -->
     <div id="popup" class="popup" onclick="closePopup(event)">
       <div class="popup-content">
         <span class="close-btn" onclick="closePopup(event)">&times;</span>
-        <div id="popupInfo">
-          <!-- Dynamische Pokémon-Daten werden hier eingefügt -->
-        </div>
-        <!-- Pfeile hinzufügen -->
+        <div id="popupInfo"></div>
+
         <span class="arrow left" onclick="navigatePokemon(-1)">&#9664;</span>
         <span class="arrow right" onclick="navigatePokemon(1)">&#9654;</span>
       </div>
