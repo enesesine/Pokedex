@@ -21,85 +21,61 @@ const typeColors = {
 
 let allPokemonData = [];
 let currentPokemonIndex = 0;
+let pokemonLimit = 30;
 
 async function loadPokemon() {
   const pokemonGrid = document.getElementById("pokemonGrid");
-
-  for (let i = 1; i <= 150; i++) {
+  for (let i = currentPokemonIndex + 1; i <= pokemonLimit; i++) {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`);
     const data = await response.json();
 
     allPokemonData.push(data);
-
-    const pokemonCard = document.createElement("div");
-    pokemonCard.classList.add("pokemon-card");
-    pokemonCard.dataset.name = data.name.toLowerCase();
-
-    const mainType = data.types[0].type.name;
-
-    if (mainType === "normal") {
-      pokemonCard.classList.add("normal");
-    }
-
-    pokemonCard.style.border = `2px solid ${typeColors[mainType]}`;
-
-    pokemonCard.innerHTML = `
-      <img src="${data.sprites.front_default}" alt="${data.name}">
-      <h2>${data.name.charAt(0).toUpperCase() + data.name.slice(1)}</h2>
-      <p>#${data.id.toString().padStart(3, "0")}</p>
-      <div class="type-color" style="background-color: ${
-        typeColors[mainType]
-      }">${mainType}</div>
-    `;
-
-    pokemonCard.onclick = () => showPopup(data);
-
-    pokemonGrid.appendChild(pokemonCard);
+    pokemonGrid.appendChild(createPokemonCard(data));
+  }
+  currentPokemonIndex = pokemonLimit;
+  pokemonLimit += 30;
+  if (pokemonLimit > 150) {
+    document.getElementById("loadMoreBtn").style.display = "none";
   }
 }
 
-async function showPopup(data) {
+function loadMorePokemon() {
+  loadPokemon();
+}
+
+function createPokemonCard(data) {
+  const pokemonCard = document.createElement("div");
+  pokemonCard.classList.add("pokemon-card");
+  pokemonCard.dataset.name = data.name.toLowerCase();
+
+  const mainType = data.types[0].type.name;
+  if (mainType === "normal") {
+    pokemonCard.classList.add("normal");
+  }
+  pokemonCard.style.border = `2px solid ${typeColors[mainType]}`;
+  pokemonCard.innerHTML = getPokemonCardHTML(data);
+  pokemonCard.onclick = () => showPopup(data);
+
+  return pokemonCard;
+}
+
+function showPopup(data) {
   const popup = document.getElementById("popup");
   currentPokemonIndex = allPokemonData.findIndex(
     (pokemon) => pokemon.id === data.id
   );
-
   updatePopupContent(data);
   popup.style.display = "flex";
 }
 
 function updatePopupContent(data) {
-  const popupInfo = document.getElementById("popupInfo");
-
-  const mainType = data.types[0].type.name;
-  popupInfo.innerHTML = `
-    <img src="${data.sprites.front_default}" alt="${data.name}">
-    <h2>${data.name.charAt(0).toUpperCase() + data.name.slice(1)}</h2>
-    <p><span class="type-color" style="background-color: ${
-      typeColors[mainType]
-    }">${mainType}</span></p>
-    <p>🌈 <strong>Typ:</strong> ${data.types
-      .map((type) => type.type.name)
-      .join(", ")}</p>
-    <p>📏 <strong>Höhe:</strong> ${data.height / 10} m</p>
-    <p>⚖️ <strong>Gewicht:</strong> ${data.weight / 10} kg</p>
-    <p>💥 <strong>Attacken:</strong></p>
-    <ul>
-      ${data.moves
-        .slice(0, 4)
-        .map((move) => `<li>${move.move.name}</li>`)
-        .join("")}
-    </ul>
-  `;
+  document.getElementById("popupInfo").innerHTML = getPopupHTML(data);
 }
 
 function navigatePokemon(direction) {
-  currentPokemonIndex += direction;
-  if (currentPokemonIndex < 0) {
-    currentPokemonIndex = allPokemonData.length - 1;
-  } else if (currentPokemonIndex >= allPokemonData.length) {
-    currentPokemonIndex = 0;
-  }
+  currentPokemonIndex =
+    (currentPokemonIndex + direction + allPokemonData.length) %
+    allPokemonData.length;
   showPopup(allPokemonData[currentPokemonIndex]);
 }
 

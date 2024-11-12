@@ -1,4 +1,5 @@
 :root {
+  /* Farben für Pokémon-Typen */
   --fire: #f08030;
   --water: #6890f0;
   --grass: #78c850;
@@ -19,12 +20,20 @@
   --normal: #d3d3d3;
 }
 
+body,
+html {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 body {
   font-family: "Arial", sans-serif;
   background-color: #1c1e26;
   color: #ffffff;
   margin: 0;
   padding: 0;
+  flex: 1;
 }
 
 header {
@@ -61,6 +70,7 @@ header .pokeball-logo {
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 20px;
   padding: 20px;
+  flex: 1;
 }
 
 .pokemon-card {
@@ -73,7 +83,9 @@ header .pokeball-logo {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  display: block; /
 }
+
 
 .pokemon-card.normal {
   background-color: #2a2d3b;
@@ -96,11 +108,30 @@ header .pokeball-logo {
   padding: 10px;
   background-color: #333;
   color: #ffffff;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
 }
 
 .footer a {
   color: #f8d030;
   text-decoration: none;
+}
+
+.load-more-btn {
+  padding: 10px 20px;
+  background-color: #f8d030;
+  border: none;
+  color: #1c1e26;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  border-radius: 5px;
+}
+
+.load-more-btn:hover {
+  background-color: #e5c127;
 }
 
 .popup {
@@ -127,12 +158,6 @@ header .pokeball-logo {
   position: relative;
 }
 
-.popup-content img {
-  width: 120px;
-  height: 120px;
-  margin-bottom: 15px;
-}
-
 .close-btn {
   position: absolute;
   top: 10px;
@@ -140,30 +165,4 @@ header .pokeball-logo {
   font-size: 24px;
   cursor: pointer;
   color: #ffffff;
-}
-
-.type-color {
-  padding: 5px 10px;
-  border-radius: 10px;
-  font-weight: bold;
-  color: #ffffff;
-  text-transform: capitalize;
-  margin: 5px;
-}
-
-.arrow {
-  position: absolute;
-  top: 50%;
-  font-size: 24px;
-  color: #ffffff;
-  cursor: pointer;
-  transform: translateY(-50%);
-}
-
-.arrow.left {
-  left: 10px;
-}
-
-.arrow.right {
-  right: 10px;
 }
